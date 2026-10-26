@@ -36,3 +36,16 @@ Provider de IA padrão: **Ollama local** (grátis). Troque para `openai`/`anthro
 ## Stack
 
 Runtime **Bun** (TS nativo, sem build step), `bun:sqlite` para estado, `node-cron` para agendamento, `rss-parser` para os feeds. O `.env` é carregado automaticamente pelo Bun.
+
+## Flags da CLI
+
+| Flag | Efeito |
+|---|---|
+| (nenhuma) / `--once` | ingere e envia um digest, depois sai |
+| `--ingest` | só coleta os feeds |
+| `--digest` | só gera e envia o digest |
+| `--loop` | agente contínuo (cron) |
+| `--dry-run` | com `--digest`/`--once`: imprime o digest sem enviar ao Telegram nem marcar itens |
+| `-h`, `--help` | mostra o uso |
+
+Argumento desconhecido ou modos conflitantes: mensagem de uso no stderr e saída com código 2, sem tocar rede ou banco.

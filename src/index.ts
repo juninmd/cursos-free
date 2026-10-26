@@ -3,19 +3,24 @@ import { env } from "./config/env.ts";
 import { digest } from "./digest.ts";
 import { ingest } from "./ingest.ts";
 import { topic } from "./config/topic.ts";
+import { USAGE, parseArgs } from "./args.ts";
 
-const args = new Set(process.argv.slice(2));
-
-async function once() {
-  await ingest();
-  await digest();
+const parsed = parseArgs(process.argv.slice(2));
+if ("help" in parsed) {
+  console.log(USAGE);
+  process.exit(0);
 }
+if ("error" in parsed) {
+  console.error(`${parsed.error}\n\n${USAGE}`);
+  process.exit(2);
+}
+const { mode, dryRun } = parsed;
 
-if (args.has("--ingest")) {
+if (mode === "ingest") {
   await ingest();
-} else if (args.has("--digest")) {
-  await digest();
-} else if (args.has("--loop")) {
+} else if (mode === "digest") {
+  await digest({ dryRun });
+} else if (mode === "loop") {
   console.log(`[${topic.name}] agente ativo`);
   console.log(`  ingestão: ${env.cronIngestion}`);
   console.log(`  digest:   ${env.cronDigest}`);
@@ -24,6 +29,7 @@ if (args.has("--ingest")) {
   cron.schedule(env.cronDigest, () => digest().catch(console.error));
 } else {
   // padrão (--once): roda um ciclo e sai
-  await once();
+  await ingest();
+  await digest({ dryRun });
   process.exit(0);
 }
