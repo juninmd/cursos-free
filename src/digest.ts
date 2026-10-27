@@ -5,7 +5,7 @@ import { sendTelegram } from "./telegram.ts";
 import { topic } from "./config/topic.ts";
 
 /** Build a pt-BR digest from pending items, send via Telegram, mark them done. */
-export async function digest(): Promise<void> {
+export async function digest({ dryRun = false }: { dryRun?: boolean } = {}): Promise<void> {
   const items = pendingItems(env.digestMaxItems);
   if (!items.length) {
     console.log("[digest] nada novo para resumir");
@@ -29,6 +29,10 @@ export async function digest(): Promise<void> {
   const date = new Date().toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
   const message = `*${topic.emoji} ${topic.title} — ${date}*\n\n${body}`;
 
+  if (dryRun) {
+    console.log(`[digest] dry-run, nada enviado:\n\n${message}`);
+    return;
+  }
   await sendTelegram(message);
   markDigested(items.map((it) => it.id));
   console.log(`[digest] enviado com ${items.length} itens`);
