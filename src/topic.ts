@@ -1,5 +1,6 @@
-// Config específica deste agente. Edite feeds/prompt à vontade.
-export const topic = {
+import { defineTopic } from "@juninmd/digest-kit";
+
+export const topic = defineTopic({
   name: "cursos-free",
   title: "Cursos Free",
   emoji: "🎓",
@@ -16,4 +17,4 @@ Regras do digest:
     { name: "Google News Cursos", url: "https://news.google.com/rss/search?q=curso%20gratuito%20certifica%C3%A7%C3%A3o%20tecnologia%20inscri%C3%A7%C3%B5es&hl=pt-BR&gl=BR&ceid=BR:pt-419" },
     { name: "freeCodeCamp", url: "https://www.freecodecamp.org/news/rss/" },
   ],
-};
+});
